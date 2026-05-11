@@ -147,6 +147,8 @@ nav.hidden { transform: translateY(-100%); }
     radial-gradient(ellipse at 50% 80%, rgba(196,56,42,0.15) 0%, transparent 60%),
     radial-gradient(ellipse at 30% 20%, rgba(212,168,67,0.08) 0%, transparent 50%),
     var(--black);
+  background-size: cover !important;
+  background-position: center !important;
 }
 
 /* Steam overlay */
@@ -366,6 +368,7 @@ section { padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 5vw, 4rem); }
 }
 
 .broth-img-placeholder {
+}
 
 /* Steam on broth images */
 .broth-steam {
@@ -530,6 +533,18 @@ section { padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 5vw, 4rem); }
   overflow: hidden;
   background: linear-gradient(180deg, rgba(196,56,42,0.05) 0%, rgba(26,26,26,0.95) 100%);
   border: 1px solid var(--mist);
+}
+
+.atmo-card.atmo-photo {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat;
+}
+
+.atmo-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(26,26,26,0.05) 0%, rgba(26,26,26,0.75) 100%);
 }
 
 .atmo-card-inner {
@@ -771,7 +786,7 @@ footer {
 
 <!-- Hero -->
 <section class="hero" id="hero">
-  <div class="hero-bg"></div>
+  <div class="hero-bg" style="background-image: url('images/shot_02_食材上桌.png');"></div>
   <div class="steam-container" id="heroSteam"></div>
   <div class="hero-content fade-up">
     <p class="hero-subtitle">Lounge Hotpot Experience</p>
@@ -949,30 +964,11 @@ footer {
 
   <div class="atmo-scroll-wrapper fade-up">
     <div class="atmo-scroll" id="atmoScroll">
-      <div class="atmo-card">
-        <div class="bokeh" style="--color:rgba(196,56,42,0.4);width:80px;height:80px;top:15%;left:20%;--dx:10px;--dy:-15px;animation-duration:5s;"></div>
-        <div class="bokeh" style="--color:rgba(212,168,67,0.3);width:50px;height:50px;top:40%;right:15%;--dx:-8px;--dy:12px;animation-duration:7s;"></div>
-        <div class="atmo-card-inner"><p class="atmo-card-label">The Lounge</p></div>
-      </div>
-      <div class="atmo-card">
-        <div class="bokeh" style="--color:rgba(212,168,67,0.35);width:70px;height:70px;top:20%;right:20%;--dx:-12px;--dy:-8px;animation-duration:6s;"></div>
-        <div class="bokeh" style="--color:rgba(196,56,42,0.3);width:40px;height:40px;bottom:30%;left:10%;--dx:15px;--dy:8px;animation-duration:8s;"></div>
-        <div class="atmo-card-inner"><p class="atmo-card-label">Private Dining</p></div>
-      </div>
-      <div class="atmo-card">
-        <div class="bokeh" style="--color:rgba(245,240,232,0.15);width:90px;height:90px;top:10%;left:30%;--dx:8px;--dy:15px;animation-duration:9s;"></div>
-        <div class="bokeh" style="--color:rgba(196,56,42,0.25);width:55px;height:55px;bottom:25%;right:25%;--dx:-10px;--dy:-12px;animation-duration:6s;"></div>
-        <div class="atmo-card-inner"><p class="atmo-card-label">Bar Counter</p></div>
-      </div>
-      <div class="atmo-card">
-        <div class="bokeh" style="--color:rgba(212,168,67,0.3);width:65px;height:65px;top:25%;left:15%;--dx:12px;--dy:-10px;animation-duration:7s;"></div>
-        <div class="bokeh" style="--color:rgba(245,240,232,0.1);width:45px;height:45px;top:50%;right:10%;--dx:-8px;--dy:15px;animation-duration:5s;"></div>
-        <div class="atmo-card-inner"><p class="atmo-card-label">Steam & Light</p></div>
-      </div>
-      <div class="atmo-card">
-        <div class="bokeh" style="--color:rgba(196,56,42,0.35);width:75px;height:75px;top:15%;right:10%;--dx:-15px;--dy:8px;animation-duration:8s;"></div>
-        <div class="bokeh" style="--color:rgba(212,168,67,0.25);width:60px;height:60px;bottom:20%;left:20%;--dx:10px;--dy:-12px;animation-duration:6s;"></div>
-        <div class="atmo-card-inner"><p class="atmo-card-label">Twilight Mood</p></div>
+      <div class="atmo-card atmo-photo" style="background-image: url('images/shot_08_火鍋餐廳室內.png');"><div class="atmo-card-overlay"></div><div class="atmo-card-inner"><p class="atmo-card-label">The Lounge</p></div></div>
+      <div class="atmo-card atmo-photo" style="background-image: url('images/shot_10_情侶吃火鍋.png');"><div class="atmo-card-overlay"></div><div class="atmo-card-inner"><p class="atmo-card-label">Private Dining</p></div></div>
+      <div class="atmo-card atmo-photo" style="background-image: url('images/shot_03_小資約會.png');"><div class="atmo-card-overlay"></div><div class="atmo-card-inner"><p class="atmo-card-label">Bar Counter</p></div></div>
+      <div class="atmo-card atmo-photo" style="background-image: url('images/shot_09_火鍋蘸料特寫.png');"><div class="atmo-card-overlay"></div><div class="atmo-card-inner"><p class="atmo-card-label">Steam & Light</p></div></div>
+      <div class="atmo-card atmo-photo" style="background-image: url('images/shot_07.png');"><div class="atmo-card-overlay"></div><div class="atmo-card-inner"><p class="atmo-card-label">Twilight Mood</p></div>
       </div>
     </div>
   </div>
