@@ -357,15 +357,15 @@ section { padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 5vw, 4rem); }
   z-index: 1;
 }
 
-.broth-img-placeholder {
-  width: 100%; height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-serif);
-  font-size: 4rem;
-  color: rgba(245,240,232,0.06);
+.broth-img-placeholder,
+.broth-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
 }
+
+.broth-img-placeholder {
 
 /* Steam on broth images */
 .broth-steam {
@@ -813,7 +813,7 @@ footer {
     <!-- Broth 1 -->
     <div class="broth-item fade-up">
       <div class="broth-visual">
-        <div class="broth-img-placeholder">壹</div>
+        <img class="broth-img" src="images/shot_01_沸騰麻辣鍋底.png" alt="灼紅麻辣" loading="lazy">
         <div class="broth-steam" data-steam="5"></div>
       </div>
       <div class="broth-info">
@@ -829,7 +829,7 @@ footer {
     <!-- Broth 2 -->
     <div class="broth-item fade-up">
       <div class="broth-visual">
-        <div class="broth-img-placeholder">貳</div>
+        <img class="broth-img" src="images/shot_04_剝皮辣椒鍋.png" alt="金湯花膠" loading="lazy">
         <div class="broth-steam" data-steam="5"></div>
       </div>
       <div class="broth-info">
@@ -845,7 +845,7 @@ footer {
     <!-- Broth 3 -->
     <div class="broth-item fade-up">
       <div class="broth-visual">
-        <div class="broth-img-placeholder">參</div>
+        <img class="broth-img" src="images/shot_05_酸白菜鍋.png" alt="白霧昆布" loading="lazy">
         <div class="broth-steam" data-steam="5"></div>
       </div>
       <div class="broth-info">
