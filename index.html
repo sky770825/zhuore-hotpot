@@ -95,8 +95,23 @@ nav.hidden { transform: translateY(-100%); }
 .nav-links a:hover { color: var(--text); }
 .nav-links a:hover::after { width: 100%; }
 
-.nav-toggle { display: none; flex-direction: column; gap: 5px; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
 .nav-toggle span { display: block; width: 24px; height: 1.5px; background: var(--text); transition: 0.3s; }
+.nav-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.nav-overlay.open { opacity: 1; pointer-events: auto; }
 
 @media (max-width: 768px) {
   nav { padding: 1rem 1.5rem; }
@@ -770,6 +785,7 @@ footer {
 </svg>
 
 <!-- Navigation -->
+<div class="nav-overlay" id="navOverlay"></div>
 <nav>
   <div class="nav-logo">灼熱</div>
   <ul class="nav-links" id="navLinks">
@@ -981,40 +997,45 @@ footer {
     <h2 class="section-title">預約灼熱</h2>
     <p class="reservation-lead">讓這一餐，成為今天最期待的事</p>
 
-    <form id="reservationForm" onsubmit="return false;">
+    <form id="reservationForm" onsubmit="handleReservation(event)">
       <div class="form-row">
-        <input type="text" placeholder="姓名 Name" required>
+        <input type="text" name="name" placeholder="姓名 Name" required>
       </div>
       <div class="form-row">
-        <input type="tel" placeholder="電話 Phone" required>
+        <input type="tel" name="phone" placeholder="電話 Phone" required pattern="[0-9]{9,10}">
       </div>
       <div class="form-row form-grid">
-        <input type="date" required>
-        <select required>
+        <input type="date" name="date" required>
+        <select name="guests" required>
           <option value="" disabled selected>人數</option>
-          <option>2 位</option>
-          <option>3 位</option>
-          <option>4 位</option>
-          <option>5 位</option>
-          <option>6 位</option>
-          <option>7-8 位（包廂）</option>
+          <option value="2">2 位</option>
+          <option value="3">3 位</option>
+          <option value="4">4 位</option>
+          <option value="5">5 位</option>
+          <option value="6">6 位</option>
+          <option value="7-8">7-8 位（包廂）</option>
         </select>
       </div>
       <div class="form-row">
-        <select required>
+        <select name="time" required>
           <option value="" disabled selected>時段</option>
-          <option>17:30</option>
-          <option>18:00</option>
-          <option>18:30</option>
-          <option>19:00</option>
-          <option>19:30</option>
-          <option>20:00</option>
-          <option>20:30</option>
-          <option>21:00</option>
+          <option value="17:30">17:30</option>
+          <option value="18:00">18:00</option>
+          <option value="18:30">18:30</option>
+          <option value="19:00">19:00</option>
+          <option value="19:30">19:30</option>
+          <option value="20:00">20:00</option>
+          <option value="20:30">20:30</option>
+          <option value="21:00">21:00</option>
         </select>
       </div>
       <button type="submit" class="cta-reserve">點燃今晚的灼熱</button>
     </form>
+    <div id="reservationSuccess" style="display:none; text-align:center; padding: 2rem; color: var(--gold);">
+      <p style="font-size: 1.5rem;">✅ 訂位成功</p>
+      <p>我們已收到您的訂位，將於 24 小時內以電話確認。</p>
+      <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">Zhuore 灼熱 · 期待與您相遇</p>
+    </div>
   </div>
 </section>
 
@@ -1048,9 +1069,9 @@ footer {
     <div>
       <p class="footer-brand">灼熱</p>
       <div class="footer-info">
-        <p>台北市大安區某某路 88 號</p>
-        <p>02-2777-8888</p>
-        <p>info@zhuore.com</p>
+        <p>台北市大安區建國南路一段88號</p>
+        <p><a href="tel:0227778888" style="color:inherit;text-decoration:none;">02-2777-8888</a></p>
+        <p><a href="mailto:info@zhuore.com" style="color:inherit;text-decoration:none;">info@zhuore.com</a></p>
       </div>
     </div>
     <div>
@@ -1063,10 +1084,11 @@ footer {
       </ul>
     </div>
     <div>
+      <p class="footer-social-title" style="font-size:0.75rem;opacity:0.5;margin-bottom:0.5rem;">Follow Us</p>
       <div class="footer-social">
-        <a href="#" aria-label="Instagram">IG</a>
-        <a href="#" aria-label="Facebook">FB</a>
-        <a href="#" aria-label="LINE">LINE</a>
+        <a href="https://instagram.com/zhuore.tw" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+        <a href="https://facebook.com/zhuoretw" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
+        <a href="https://line.me/ti/p/@zhuore" target="_blank" rel="noopener" aria-label="LINE">LINE</a>
       </div>
     </div>
   </div>
@@ -1132,9 +1154,23 @@ window.addEventListener('scroll', () => {
 // ==================== MOBILE NAV TOGGLE ====================
 const navToggle = document.getElementById('navToggle');
 const navLinks = document.getElementById('navLinks');
-navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+const navOverlay = document.getElementById('navOverlay');
+navToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+  navToggle.classList.toggle('open');
+  navOverlay.classList.toggle('open');
+});
 navLinks.querySelectorAll('a').forEach(a => {
-  a.addEventListener('click', () => navLinks.classList.remove('open'));
+  a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    navToggle.classList.remove('open');
+    navOverlay.classList.remove('open');
+  });
+});
+navOverlay.addEventListener('click', () => {
+  navLinks.classList.remove('open');
+  navToggle.classList.remove('open');
+  navOverlay.classList.remove('open');
 });
 
 // ==================== MENU CARD GLOW ====================
@@ -1145,6 +1181,29 @@ document.querySelectorAll('.menu-card').forEach(card => {
     card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
   });
 });
+});
+
+// ==================== RESERVATION FORM ====================
+function handleReservation(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    name: form.name.value,
+    phone: form.phone.value,
+    date: form.date.value,
+    guests: form.guests.value,
+    time: form.time.value
+  };
+  // 簡單驗證
+  if (!data.name || !data.phone || !data.date || !data.guests || !data.time) {
+    alert('請填寫所有欄位');
+    return;
+  }
+  // 隱藏表單，顯示成功訊息
+  form.style.display = 'none';
+  document.getElementById('reservationSuccess').style.display = 'block';
+  // 可串接後端：fetch('/api/reservation', { method: 'POST', body: JSON.stringify(data) })
+}
 </script>
 </body>
 </html>
