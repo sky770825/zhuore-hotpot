@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灼熱 — 下班後，被熱氣包圍的城市癒癒空間</title>
+<meta name="description" content="灼熱，台北精品火鍋。下班後，被熱氣包圍的城市癒癒空間。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ==================== RESET & VARIABLES ==================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #1A1A1A;
+  --red: #C4382A;
+  --gold: #D4A843;
+  --mist: rgba(255,255,255,0.08);
+  --text: #F5F0E8;
+  --text-dim: rgba(245,240,232,0.5);
+  --font-sans: 'Noto Sans TC', sans-serif;
+  --font-serif: 'Cormorant Garamond', serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+/* ==================== FILM GRAIN OVERLAY ==================== */
+.grain {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+}
+
+/* ==================== NAVIGATION ==================== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(26,26,26,0.6);
+  border-bottom: 1px solid var(--mist);
+  transition: transform 0.4s ease;
+}
+
+nav.hidden { transform: translateY(-100%); }
+
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-toggle { display: none; flex-direction: column; gap: 5px; }
+.nav-toggle span { display: block; width: 24px; height: 1.5px; background: var(--text); transition: 0.3s; }
+
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-toggle { display: flex; }
+  .nav-links {
+    position: fixed;
+    top: 0; right: 0;
+    width: min(320px, 80vw); height: 100vh;
+    flex-direction: column;
+    background: rgba(26,26,26,0.95);
+    backdrop-filter: blur(20px);
+    padding: 5rem 2.5rem;
+    gap: 1.5rem;
+    transform: translateX(100%);
+    transition: transform 0.4s ease;
+  }
+  .nav-links.open { transform: translateX(0); }
+  .nav-links a { font-size: 1rem; }
+}
+
+/* ==================== SCROLL ANIMATIONS ==================== */
+.fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== HERO ==================== */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 80%, rgba(196,56,42,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 30% 20%, rgba(212,168,67,0.08) 0%, transparent 50%),
+    var(--black);
+}
+
+/* Steam overlay */
+.steam-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.steam-particle {
+  position: absolute;
+  bottom: -20%;
+  width: 2px;
+  background: linear-gradient(to top, transparent, rgba(255,255,255,0.06), transparent);
+  border-radius: 50%;
+  animation: steamRise linear infinite;
+}
+
+@keyframes steamRise {
+  0% {
+    transform: translateY(0) translateX(0) scaleX(1);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% {
+    transform: translateY(-120vh) translateX(var(--drift)) scaleX(2.5);
+    opacity: 0;
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 2rem;
+}
+
+.hero-subtitle {
+  font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(4rem, 12vw, 9rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.hero-tagline {
+  font-size: clamp(0.9rem, 1.5vw, 1.15rem);
+  color: var(--text-dim);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  margin-bottom: 3rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-primary {
+  display: inline-block;
+  padding: 1rem 3rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s, background 0.4s, box-shadow 0.4s;
+  animation: ctaGlow 3s ease-in-out infinite;
+}
+
+@keyframes ctaGlow {
+  0%, 100% { box-shadow: 0 0 0px transparent; }
+  50% { box-shadow: 0 0 30px rgba(212,168,67,0.15); }
+}
+
+.cta-primary:hover {
+  background: var(--gold);
+  color: var(--black);
+  box-shadow: 0 0 40px rgba(212,168,67,0.25);
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  z-index: 2;
+}
+
+.hero-scroll span {
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+@keyframes scrollLine {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.5); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* ==================== MARQUEE ==================== */
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--mist);
+  border-bottom: 1px solid var(--mist);
+}
+
+.marquee-inner {
+  display: inline-flex;
+  animation: marqueeScroll 30s linear infinite;
+}
+
+.marquee-inner span {
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  letter-spacing: 0.3em;
+  color: var(--text-dim);
+  padding: 0 3rem;
+  font-style: italic;
+}
+
+.marquee-inner .dot {
+  color: var(--red);
+  font-style: normal;
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ==================== SECTIONS ==================== */
+section { padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 5vw, 4rem); }
+
+.section-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.section-desc {
+  color: var(--text-dim);
+  max-width: 560px;
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+/* ==================== BROTH EXPERIENCE ==================== */
+#broth { max-width: 1200px; margin: 0 auto; }
+
+.broth-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  margin-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+.broth-item:nth-child(even) .broth-visual { order: 2; }
+.broth-item:nth-child(even) .broth-info { order: 1; }
+
+.broth-visual {
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: 4px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(196,56,42,0.08), rgba(26,26,26,0.9));
+}
+
+.broth-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--mist);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.broth-img-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 4rem;
+  color: rgba(245,240,232,0.06);
+}
+
+/* Steam on broth images */
+.broth-steam {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.broth-steam i {
+  position: absolute;
+  bottom: 0;
+  width: 1.5px;
+  background: linear-gradient(to top, transparent, rgba(255,255,255,0.08), transparent);
+  animation: steamRise linear infinite;
+}
+
+.broth-name {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.06em;
+}
+
+.broth-en {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  margin-bottom: 1.5rem;
+}
+
+.broth-desc {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 2;
+  margin-bottom: 1.5rem;
+}
+
+.broth-tags {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.broth-tags span {
+  font-size: 0.75rem;
+  padding: 0.35rem 1rem;
+  border: 1px solid var(--mist);
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+@media (max-width: 768px) {
+  .broth-item { grid-template-columns: 1fr; }
+  .broth-item:nth-child(even) .broth-visual { order: 0; }
+  .broth-item:nth-child(even) .broth-info { order: 0; }
+}
+
+/* ==================== MENU ==================== */
+#menu { background: rgba(15,15,15,0.6); }
+
+.menu-container { max-width: 1000px; margin: 0 auto; }
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1px;
+  margin-top: 3rem;
+  background: var(--mist);
+}
+
+.menu-card {
+  background: var(--black);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(212,168,67,0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.menu-card:hover::before { opacity: 1; }
+.menu-card:hover { background: rgba(30,30,30,0.9); }
+
+.menu-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.05em;
+}
+
+.menu-card-en {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.menu-card-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.menu-card-items li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  padding-bottom: 0.5rem;
+}
+
+.menu-card-items li .price {
+  color: var(--gold);
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+}
+
+/* ==================== ATMOSPHERE ==================== */
+#atmosphere { padding-right: 0; }
+
+.atmo-scroll-wrapper {
+  position: relative;
+  margin-top: 3rem;
+}
+
+.atmo-scroll {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 2rem;
+  padding-right: clamp(1.5rem, 5vw, 4rem);
+}
+
+.atmo-scroll::-webkit-scrollbar { display: none; }
+
+.atmo-card {
+  flex: 0 0 clamp(280px, 40vw, 420px);
+  scroll-snap-align: start;
+  position: relative;
+  aspect-ratio: 3/4;
+  border-radius: 4px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(196,56,42,0.05) 0%, rgba(26,26,26,0.95) 100%);
+  border: 1px solid var(--mist);
+}
+
+.atmo-card-inner {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+}
+
+.atmo-card-label {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-style: italic;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+/* Bokeh dots */
+.bokeh {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color) 0%, transparent 70%);
+  opacity: 0.3;
+  animation: bokehFloat 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes bokehFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1.3); }
+}
+
+/* ==================== RESERVATION ==================== */
+#reservation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+.reservation-card {
+  max-width: 560px;
+  width: 100%;
+  padding: clamp(2.5rem, 5vw, 4rem);
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--mist);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.reservation-card .section-title { margin-bottom: 0.5rem; }
+
+.reservation-lead {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+}
+
+.form-row { margin-bottom: 1.25rem; }
+
+.form-row input,
+.form-row select {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 300;
+  transition: border-color 0.3s;
+  outline: none;
+}
+
+.form-row input::placeholder { color: var(--text-dim); }
+.form-row input:focus,
+.form-row select:focus { border-color: var(--gold); }
+
+.form-row select option { background: var(--black); color: var(--text); }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cta-reserve {
+  width: 100%;
+  padding: 1.1rem;
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, var(--red), #a82e22);
+  color: var(--text);
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: box-shadow 0.4s, transform 0.2s;
+  animation: ctaGlowRed 3s ease-in-out infinite;
+}
+
+@keyframes ctaGlowRed {
+  0%, 100% { box-shadow: 0 0 0px transparent; }
+  50% { box-shadow: 0 0 35px rgba(196,56,42,0.25); }
+}
+
+.cta-reserve:hover {
+  box-shadow: 0 0 50px rgba(196,56,42,0.35);
+  transform: translateY(-1px);
+}
+
+/* ==================== ABOUT ==================== */
+#about {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.about-brand {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-bottom: 2rem;
+}
+
+.about-text {
+  color: var(--text-dim);
+  font-size: 1rem;
+  line-height: 2.2;
+  margin-bottom: 1.5rem;
+}
+
+.about-sig {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--gold);
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+  border-top: 1px solid var(--mist);
+  padding: 3rem clamp(1.5rem, 5vw, 4rem);
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.footer-brand {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.footer-info { font-size: 0.85rem; color: var(--text-dim); line-height: 2; }
+
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 0.5rem; }
+.footer-links a {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  transition: color 0.3s;
+  letter-spacing: 0.08em;
+}
+.footer-links a:hover { color: var(--text); }
+
+.footer-social { display: flex; gap: 1.5rem; }
+.footer-social a {
+  width: 40px; height: 40px;
+  border: 1px solid var(--mist);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  transition: border-color 0.3s, color 0.3s;
+  letter-spacing: 0;
+}
+.footer-social a:hover { border-color: var(--gold); color: var(--gold); }
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--mist);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: rgba(245,240,232,0.25);
+}
+
+@media (max-width: 768px) {
+  .footer-inner { grid-template-columns: 1fr; text-align: center; }
+  .footer-social { justify-content: center; }
+  .footer-bottom { flex-direction: column; align-items: center; gap: 0.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Film Grain SVG Overlay -->
+<svg class="grain" xmlns="http://www.w3.org/2000/svg">
+  <filter id="grain-filter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#grain-filter)"/>
+</svg>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-logo">灼熱</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#broth">湯底</a></li>
+    <li><a href="#menu">菜單</a></li>
+    <li><a href="#atmosphere">空間</a></li>
+    <li><a href="#reservation">訂位</a></li>
+    <li><a href="#about">品牌</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="steam-container" id="heroSteam"></div>
+  <div class="hero-content fade-up">
+    <p class="hero-subtitle">Lounge Hotpot Experience</p>
+    <h1 class="hero-title">灼熱</h1>
+    <p class="hero-tagline">下班後，被熱氣包圍的城市癒癒空間</p>
+    <a href="#reservation" class="cta-primary">立即訂位</a>
+  </div>
+  <div class="hero-scroll">
+    SCROLL
+    <span></span>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee">
+  <div class="marquee-inner" id="marquee">
+    <span>精品火鍋 <i class="dot">&bull;</i></span>
+    <span>城市癒癒空間 <i class="dot">&bull;</i></span>
+    <span>Premium Hotpot <i class="dot">&bull;</i></span>
+    <span>下班後的溫柔 <i class="dot">&bull;</i></span>
+    <span>灼熱 Lounge <i class="dot">&bull;</i></span>
+    <span>精品火鍋 <i class="dot">&bull;</i></span>
+    <span>城市癒癒空間 <i class="dot">&bull;</i></span>
+    <span>Premium Hotpot <i class="dot">&bull;</i></span>
+    <span>下班後的溫柔 <i class="dot">&bull;</i></span>
+    <span>灼熱 Lounge <i class="dot">&bull;</i></span>
+  </div>
+</div>
+
+<!-- Broth Experience -->
+<section id="broth">
+  <div class="fade-up">
+    <p class="section-label">Broth Experience</p>
+    <h2 class="section-title">三款靈魂湯底</h2>
+    <p class="section-desc">每一鍋，都是一場溫度與風味的儀式。從經典到創新，灼熱以湯底詮釋我們對火鍋的信仰。</p>
+  </div>
+
+  <div style="margin-top: clamp(3rem, 6vw, 5rem);">
+    <!-- Broth 1 -->
+    <div class="broth-item fade-up">
+      <div class="broth-visual">
+        <div class="broth-img-placeholder">壹</div>
+        <div class="broth-steam" data-steam="5"></div>
+      </div>
+      <div class="broth-info">
+        <h3 class="broth-name">灼紅麻辣</h3>
+        <p class="broth-en">Crimson Mala</p>
+        <p class="broth-desc">以三十餘種辛香料慢熬八小時，層次分明的麻與辣在舌尖交織。不只是辣，而是一種令人上癮的溫暖。花椒的麻韻在唇齒間迴盪，讓人忘卻城市的疲憊。</p>
+        <div class="broth-tags">
+          <span>重麻</span><span>濃郁</span><span>招牌</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Broth 2 -->
+    <div class="broth-item fade-up">
+      <div class="broth-visual">
+        <div class="broth-img-placeholder">貳</div>
+        <div class="broth-steam" data-steam="5"></div>
+      </div>
+      <div class="broth-info">
+        <h3 class="broth-name">金湯花膠</h3>
+        <p class="broth-en">Golden Collagen</p>
+        <p class="broth-desc">選用深海花膠與老母雞慢燉十二小時，金黃色的湯體如絲綢般滑順。每一口都是膠質與鮮味的完美融合，為肌膚注入來自深海的溫柔滋養。</p>
+        <div class="broth-tags">
+          <span>膠質</span><span>清甜</span><span>養顏</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Broth 3 -->
+    <div class="broth-item fade-up">
+      <div class="broth-visual">
+        <div class="broth-img-placeholder">參</div>
+        <div class="broth-steam" data-steam="5"></div>
+      </div>
+      <div class="broth-info">
+        <h3 class="broth-name">白霧昆布</h3>
+        <p class="broth-en">White Mist Kombu</p>
+        <p class="broth-desc">北海道頂級利尻昆布與柴魚的極致清澄。如同冬日的白霧，純淨而深邃。看似簡單，卻是最考驗功力的一鍋——讓食材的本味，成為最好的調味。</p>
+        <div class="broth-tags">
+          <span>清澄</span><span>和風</span><span>素雅</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Menu -->
+<section id="menu">
+  <div class="menu-container">
+    <div class="fade-up">
+      <p class="section-label">Menu</p>
+      <h2 class="section-title">嚴選食材</h2>
+      <p class="section-desc">從產地到餐桌，每一份食材都經過灼熱的嚴格挑選。</p>
+    </div>
+
+    <div class="menu-grid fade-up">
+      <div class="menu-card">
+        <h3 class="menu-card-title">肉品</h3>
+        <p class="menu-card-en">Premium Meats</p>
+        <ul class="menu-card-items">
+          <li><span>日本 A5 和牛</span><span class="price">$1,680</span></li>
+          <li><span>伊比利豬梅花</span><span class="price">$580</span></li>
+          <li><span>澳洲穀飼牛舌</span><span class="price">$780</span></li>
+          <li><span>櫻桃鴨胸薄切</span><span class="price">$480</span></li>
+        </ul>
+      </div>
+
+      <div class="menu-card">
+        <h3 class="menu-card-title">海鮮</h3>
+        <p class="menu-card-en">Seafood</p>
+        <ul class="menu-card-items">
+          <li><span>活體大明蝦</span><span class="price">$880</span></li>
+          <li><span>北海道干貝</span><span class="price">$680</span></li>
+          <li><span>鮮活鮑魚</span><span class="price">$580</span></li>
+          <li><span>手打花枝漿</span><span class="price">$380</span></li>
+        </ul>
+      </div>
+
+      <div class="menu-card">
+        <h3 class="menu-card-title">蔬食</h3>
+        <p class="menu-card-en">Vegetables</p>
+        <ul class="menu-card-items">
+          <li><span>有機綜合菇盤</span><span class="price">$280</span></li>
+          <li><span>手摘山茼蒿</span><span class="price">$180</span></li>
+          <li><span>日本山藥薄片</span><span class="price">$220</span></li>
+          <li><span>玉米筍花椰</span><span class="price">$160</span></li>
+        </ul>
+      </div>
+
+      <div class="menu-card">
+        <h3 class="menu-card-title">手作</h3>
+        <p class="menu-card-en">Handmade</p>
+        <ul class="menu-card-items">
+          <li><span>灼熱蝦滑</span><span class="price">$320</span></li>
+          <li><span>墨魚花枝丸</span><span class="price">$280</span></li>
+          <li><span>鮮蝦燕餃</span><span class="price">$220</span></li>
+          <li><span>芝士年糕</span><span class="price">$180</span></li>
+        </ul>
+      </div>
+
+      <div class="menu-card">
+        <h3 class="menu-card-title">飲品</h3>
+        <p class="menu-card-en">Beverages</p>
+        <ul class="menu-card-items">
+          <li><span>梅酒沙瓦</span><span class="price">$280</span></li>
+          <li><span>柚子氣泡飲</span><span class="price">$180</span></li>
+          <li><span>灼熱特調啤酒</span><span class="price">$220</span></li>
+          <li><span>冷萃烏龍</span><span class="price">$160</span></li>
+        </ul>
+      </div>
+
+      <div class="menu-card">
+        <h3 class="menu-card-title">甜品</h3>
+        <p class="menu-card-en">Desserts</p>
+        <ul class="menu-card-items">
+          <li><span>焦糖布蕾</span><span class="price">$180</span></li>
+          <li><span>抹茶白玉</span><span class="price">$160</span></li>
+          <li><span>黑糖麻糬冰</span><span class="price">$150</span></li>
+          <li><span>季節水果盤</span><span class="price">$200</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Atmosphere -->
+<section id="atmosphere">
+  <div class="fade-up">
+    <p class="section-label">Atmosphere</p>
+    <h2 class="section-title">沉浸空間</h2>
+    <p class="section-desc">從光影到音樂，每一處細節都在訴說灼熱的溫度美學。</p>
+  </div>
+
+  <div class="atmo-scroll-wrapper fade-up">
+    <div class="atmo-scroll" id="atmoScroll">
+      <div class="atmo-card">
+        <div class="bokeh" style="--color:rgba(196,56,42,0.4);width:80px;height:80px;top:15%;left:20%;--dx:10px;--dy:-15px;animation-duration:5s;"></div>
+        <div class="bokeh" style="--color:rgba(212,168,67,0.3);width:50px;height:50px;top:40%;right:15%;--dx:-8px;--dy:12px;animation-duration:7s;"></div>
+        <div class="atmo-card-inner"><p class="atmo-card-label">The Lounge</p></div>
+      </div>
+      <div class="atmo-card">
+        <div class="bokeh" style="--color:rgba(212,168,67,0.35);width:70px;height:70px;top:20%;right:20%;--dx:-12px;--dy:-8px;animation-duration:6s;"></div>
+        <div class="bokeh" style="--color:rgba(196,56,42,0.3);width:40px;height:40px;bottom:30%;left:10%;--dx:15px;--dy:8px;animation-duration:8s;"></div>
+        <div class="atmo-card-inner"><p class="atmo-card-label">Private Dining</p></div>
+      </div>
+      <div class="atmo-card">
+        <div class="bokeh" style="--color:rgba(245,240,232,0.15);width:90px;height:90px;top:10%;left:30%;--dx:8px;--dy:15px;animation-duration:9s;"></div>
+        <div class="bokeh" style="--color:rgba(196,56,42,0.25);width:55px;height:55px;bottom:25%;right:25%;--dx:-10px;--dy:-12px;animation-duration:6s;"></div>
+        <div class="atmo-card-inner"><p class="atmo-card-label">Bar Counter</p></div>
+      </div>
+      <div class="atmo-card">
+        <div class="bokeh" style="--color:rgba(212,168,67,0.3);width:65px;height:65px;top:25%;left:15%;--dx:12px;--dy:-10px;animation-duration:7s;"></div>
+        <div class="bokeh" style="--color:rgba(245,240,232,0.1);width:45px;height:45px;top:50%;right:10%;--dx:-8px;--dy:15px;animation-duration:5s;"></div>
+        <div class="atmo-card-inner"><p class="atmo-card-label">Steam & Light</p></div>
+      </div>
+      <div class="atmo-card">
+        <div class="bokeh" style="--color:rgba(196,56,42,0.35);width:75px;height:75px;top:15%;right:10%;--dx:-15px;--dy:8px;animation-duration:8s;"></div>
+        <div class="bokeh" style="--color:rgba(212,168,67,0.25);width:60px;height:60px;bottom:20%;left:20%;--dx:10px;--dy:-12px;animation-duration:6s;"></div>
+        <div class="atmo-card-inner"><p class="atmo-card-label">Twilight Mood</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reservation -->
+<section id="reservation">
+  <div class="reservation-card fade-up">
+    <p class="section-label">Reservation</p>
+    <h2 class="section-title">預約灼熱</h2>
+    <p class="reservation-lead">讓這一餐，成為今天最期待的事</p>
+
+    <form id="reservationForm" onsubmit="return false;">
+      <div class="form-row">
+        <input type="text" placeholder="姓名 Name" required>
+      </div>
+      <div class="form-row">
+        <input type="tel" placeholder="電話 Phone" required>
+      </div>
+      <div class="form-row form-grid">
+        <input type="date" required>
+        <select required>
+          <option value="" disabled selected>人數</option>
+          <option>2 位</option>
+          <option>3 位</option>
+          <option>4 位</option>
+          <option>5 位</option>
+          <option>6 位</option>
+          <option>7-8 位（包廂）</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <select required>
+          <option value="" disabled selected>時段</option>
+          <option>17:30</option>
+          <option>18:00</option>
+          <option>18:30</option>
+          <option>19:00</option>
+          <option>19:30</option>
+          <option>20:00</option>
+          <option>20:30</option>
+          <option>21:00</option>
+        </select>
+      </div>
+      <button type="submit" class="cta-reserve">點燃今晚的灼熱</button>
+    </form>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="fade-up">
+    <p class="section-label">Our Story</p>
+    <h2 class="about-brand">灼熱</h2>
+    <p class="about-text">
+      我們相信，火鍋不只是一頓飯。<br>
+      它是結束一天疲憊後，與重要的人面對面坐下，<br>
+      在升騰的熱氣中卸下所有武裝的時刻。
+    </p>
+    <p class="about-text">
+      灼熱，誕生於這座城市最需要溫度的角落。<br>
+      我們以精品餐飲的態度重新定義火鍋——<br>
+      不是喧囂，而是沉浸；不是飽足，而是療癒。
+    </p>
+    <p class="about-text">
+      從湯底到食材，從燈光到音樂，<br>
+      每一個細節都在說同一件事：<br>
+      歡迎回來，讓熱氣擁抱你。
+    </p>
+    <p class="about-sig">— 灼熱團隊</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-brand">灼熱</p>
+      <div class="footer-info">
+        <p>台北市大安區某某路 88 號</p>
+        <p>02-2777-8888</p>
+        <p>info@zhuore.com</p>
+      </div>
+    </div>
+    <div>
+      <ul class="footer-links">
+        <li><a href="#broth">湯底體驗</a></li>
+        <li><a href="#menu">精選菜單</a></li>
+        <li><a href="#atmosphere">空間氛圍</a></li>
+        <li><a href="#reservation">線上訂位</a></li>
+        <li><a href="#about">品牌故事</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Facebook">FB</a>
+        <a href="#" aria-label="LINE">LINE</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 灼熱 ZHUO RE. All rights reserved.</span>
+    <span>Lounge Hotpot Experience</span>
+  </div>
+</footer>
+
+<script>
+// ==================== STEAM PARTICLES ====================
+function createSteamParticles(container, count) {
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'steam-particle';
+    const left = Math.random() * 100;
+    const h = 60 + Math.random() * 100;
+    const dur = 6 + Math.random() * 8;
+    const delay = Math.random() * dur;
+    const drift = (Math.random() - 0.5) * 60;
+    p.style.cssText = `left:${left}%;height:${h}px;animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px;`;
+    container.appendChild(p);
+  }
+}
+
+createSteamParticles(document.getElementById('heroSteam'), 25);
+
+// Broth steam
+document.querySelectorAll('.broth-steam').forEach(el => {
+  const count = parseInt(el.dataset.steam) || 5;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('i');
+    const left = 15 + Math.random() * 70;
+    const h = 30 + Math.random() * 50;
+    const dur = 4 + Math.random() * 5;
+    const delay = Math.random() * dur;
+    const drift = (Math.random() - 0.5) * 30;
+    s.style.cssText = `left:${left}%;height:${h}px;animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px;`;
+    el.appendChild(s);
+  }
+});
+
+// ==================== INTERSECTION OBSERVER ====================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ==================== NAV SCROLL HIDE ====================
+let lastScroll = 0;
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  const curr = window.scrollY;
+  nav.classList.toggle('hidden', curr > lastScroll && curr > 100);
+  lastScroll = curr;
+}, { passive: true });
+
+// ==================== MOBILE NAV TOGGLE ====================
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// ==================== MENU CARD GLOW ====================
+document.querySelectorAll('.menu-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+    card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
+  });
+});
+</script>
+</body>
+</html>
